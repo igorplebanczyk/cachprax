@@ -11,6 +11,17 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 	originURL.Path = r.URL.Path
 	originURL.RawQuery = r.URL.RawQuery
 
+	// Check if the request is cached
+	cacheKey := r.URL.String()
+	if cfg.Cache.IsCached(cacheKey) {
+		w.Header().Set("X-Cache", "HIT")
+		_, err := w.Write(cfg.Cache.GetCached(cacheKey))
+		if err != nil {
+			return
+		}
+		return
+	}
+
 	// Forward the request to the origin server
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, originURL.String(), r.Body)
@@ -39,6 +50,8 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}(resp.Body)
 
+	w.Header().Set("X-Cache", "MISS")
+
 	// Copy the headers from the origin server’s response
 	for name, values := range resp.Header {
 		for _, value := range values {
@@ -48,6 +61,14 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Set the response status code
 	w.WriteHeader(resp.StatusCode)
+
+	// Cache the response body
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
+		return
+	}
+	cfg.Cache.SetCached(cacheKey, bodyBytes)
 
 	// Copy the response body from the origin server to the client
 	_, err = io.Copy(w, resp.Body)

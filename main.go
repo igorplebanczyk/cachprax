@@ -1,14 +1,17 @@
 package main
 
 import (
+	"cachprax/internal/cache"
+	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
+	"time"
 )
 
 type Config struct {
 	Port   int
 	Origin url.URL
+	Cache  *cache.Cache
 }
 
 func main() {
@@ -18,12 +21,12 @@ func main() {
 			Scheme: "http",
 			Host:   "httpbin.org",
 		},
+		Cache: cache.NewCache(5*time.Minute, 10*time.Minute),
 	}
-	port := strconv.Itoa(cfg.Port)
 
 	mux := http.NewServeMux()
 	server := &http.Server{
-		Addr:    ":" + port,
+		Addr:    fmt.Sprintf(":%d", cfg.Port),
 		Handler: mux,
 	}
 
