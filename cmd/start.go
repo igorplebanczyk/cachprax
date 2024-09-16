@@ -21,10 +21,6 @@ func startCommand(c *cli.Context) error {
 		Cache:  cache.NewCache(5*time.Minute, 10*time.Minute),
 	}
 
-	//go func() {
-	//
-	//}()
-
 	err = cfg.StartServer()
 	if err != nil {
 		fmt.Printf("error starting server\n")
