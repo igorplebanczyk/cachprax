@@ -10,8 +10,16 @@ func NewApp() *cli.App {
 			{
 				Name:   "conntest",
 				Usage:  "Test the connection to the origin server",
-				Action: conntestCommand,
+				Action: ConntestCommand,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "origin",
+						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+				},
 			},
 		},
+		Flags: []cli.Flag{},
 	}
 }

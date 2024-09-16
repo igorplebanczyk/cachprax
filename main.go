@@ -1,10 +1,12 @@
 package main
 
 import (
+	"cachprax/cmd"
 	"cachprax/internal/cache"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -32,7 +34,13 @@ func main() {
 
 	mux.HandleFunc("/", cfg.proxyHandler)
 
-	err := server.ListenAndServe()
+	cliApp := cmd.NewApp()
+	err := cliApp.Run(os.Args)
+	if err != nil {
+		fmt.Printf("error running cli: %v", err)
+	}
+
+	err = server.ListenAndServe()
 	if err != nil {
 		return
 	}
