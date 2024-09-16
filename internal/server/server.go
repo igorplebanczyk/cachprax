@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type Config struct {
 	Port   int
-	Origin string
+	Origin *url.URL
 	Cache  *cache.Cache
 }
 
@@ -31,12 +32,23 @@ func (cfg *Config) StartServer() error {
 }
 
 func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
+	// Build the full URL for the origin server
+	originURL := cfg.Origin
+	originURL.Path = r.URL.Path
+	originURL.RawQuery = r.URL.RawQuery
+
 	// Check if the request is cached
 	cacheKey := r.URL.String()
 	if cfg.Cache.IsCached(cacheKey) {
 		w.Header().Set("X-Cache", "HIT")
-		_, err := w.Write(cfg.Cache.GetCached(cacheKey))
+		cachedData := cfg.Cache.GetCached(cacheKey)
+		if cachedData == nil {
+			http.Error(w, "Cache entry is nil", http.StatusInternalServerError)
+			return
+		}
+		_, err := w.Write(cachedData)
 		if err != nil {
+			http.Error(w, "Failed to write cached response", http.StatusInternalServerError)
 			return
 		}
 		return
@@ -44,13 +56,13 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Forward the request to the origin server
 	client := &http.Client{}
-	req, err := http.NewRequest(r.Method, cfg.Origin, r.Body)
+	req, err := http.NewRequest(r.Method, originURL.String(), r.Body)
 	if err != nil {
 		http.Error(w, "Failed to create request to origin server", http.StatusInternalServerError)
 		return
 	}
 
-	// Copy the headers from the incoming request to the outgoing request
+	// Copy headers from the incoming request to the outgoing request
 	for name, values := range r.Header {
 		for _, value := range values {
 			req.Header.Add(name, value)
@@ -66,34 +78,33 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			http.Error(w, "Failed to close response body", http.StatusInternalServerError)
+
 		}
 	}(resp.Body)
 
+	// Set the response headers and status code
 	w.Header().Set("X-Cache", "MISS")
-
-	// Copy the headers from the origin server’s response
 	for name, values := range resp.Header {
 		for _, value := range values {
 			w.Header().Add(name, value)
 		}
 	}
-
-	// Set the response status code
 	w.WriteHeader(resp.StatusCode)
 
-	// Cache the response body
+	// Read the response body into a buffer
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
 		return
 	}
+
+	// Cache the response body
 	cfg.Cache.SetCached(cacheKey, bodyBytes)
 
-	// Copy the response body from the origin server to the client
-	_, err = io.Copy(w, resp.Body)
+	// Write the response body to the client
+	_, err = w.Write(bodyBytes)
 	if err != nil {
-		http.Error(w, "Failed to copy response body", http.StatusInternalServerError)
+		http.Error(w, "Failed to write response body", http.StatusInternalServerError)
 		return
 	}
 }
