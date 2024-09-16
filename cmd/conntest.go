@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func ConntestCommand(c *cli.Context) error {
+func conntestCommand(c *cli.Context) error {
 	origin := c.String("origin")
 	fmt.Printf("Attempting to connect to %s...\n", origin)
 

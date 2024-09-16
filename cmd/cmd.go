@@ -10,11 +10,28 @@ func NewApp() *cli.App {
 			{
 				Name:   "conntest",
 				Usage:  "Test the connection to the origin server",
-				Action: ConntestCommand,
+				Action: conntestCommand,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "origin",
 						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+				},
+			},
+			{
+				Name:   "start",
+				Usage:  "Start the caching proxy server",
+				Action: startCommand,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "origin",
+						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+					&cli.IntFlag{
+						Name:     "port",
+						Usage:    "The port on which the caching proxy server will listen on",
 						Required: true,
 					},
 				},

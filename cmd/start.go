@@ -1,16 +1,53 @@
-package main
+package cmd
 
 import (
+	"cachprax/internal/cache"
+	"fmt"
+	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
+	"time"
 )
 
-func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
-	// Build the full URL for the origin server
-	originURL := cfg.Origin
-	originURL.Path = r.URL.Path
-	originURL.RawQuery = r.URL.RawQuery
+type Config struct {
+	Port   int
+	Origin string
+	Cache  *cache.Cache
+}
 
+func startCommand(c *cli.Context) error {
+	cfg := &Config{
+		Port:   c.Int("port"),
+		Origin: c.String("origin"),
+		Cache:  cache.NewCache(5*time.Minute, 10*time.Minute),
+	}
+
+	err := cfg.StartServer()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cfg *Config) StartServer() error {
+	mux := http.NewServeMux()
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%d", cfg.Port),
+		Handler: mux,
+	}
+
+	mux.HandleFunc("/", cfg.proxyHandler)
+
+	err := server.ListenAndServe()
+	if err != nil {
+		return fmt.Errorf("error starting the server: %v", err)
+	}
+
+	return nil
+}
+
+func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the request is cached
 	cacheKey := r.URL.String()
 	if cfg.Cache.IsCached(cacheKey) {
@@ -24,7 +61,7 @@ func (cfg *Config) proxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Forward the request to the origin server
 	client := &http.Client{}
-	req, err := http.NewRequest(r.Method, originURL.String(), r.Body)
+	req, err := http.NewRequest(r.Method, cfg.Origin, r.Body)
 	if err != nil {
 		http.Error(w, "Failed to create request to origin server", http.StatusInternalServerError)
 		return
