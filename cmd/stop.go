@@ -1,29 +1,20 @@
 package cmd
 
 import (
+	"cachprax/cmd/internal/file"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"path/filepath"
-	"strconv"
 )
 
 func stopCommand(c *cli.Context) error {
-	pidFile := filepath.Join(os.TempDir(), "cachprax.pid")
-
-	// Read the PID from the file
-	pidBytes, err := os.ReadFile(pidFile)
+	serverInfo, err := file.GetDataFromFile()
 	if err != nil {
-		return fmt.Errorf("could not read PID file: %v", err)
+		return fmt.Errorf("could not get server info from file: %v", err)
 	}
 
-	pid, err := strconv.Atoi(string(pidBytes))
-	if err != nil {
-		return fmt.Errorf("could not convert PID to integer: %v", err)
-	}
-
-	// Find the process and terminate it
-	process, err := os.FindProcess(pid)
+	process, err := os.FindProcess(serverInfo.PID)
 	if err != nil {
 		return fmt.Errorf("could not find process: %v", err)
 	}
@@ -33,9 +24,10 @@ func stopCommand(c *cli.Context) error {
 		return fmt.Errorf("could not kill process: %v", err)
 	}
 
+	pidFile := filepath.Join(os.TempDir(), "cachprax.json")
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("could not remove PID file: %v", err)
+		return fmt.Errorf("could not remove JSON file: %v", err)
 	}
 
 	fmt.Println("Server stopped.")

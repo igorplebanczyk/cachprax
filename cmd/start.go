@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"cachprax/cmd/internal/file"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strconv"
 )
 
@@ -31,11 +31,9 @@ func startCommand(c *cli.Context) error {
 
 	fmt.Printf("Server started in background with PID: %d\n", cmd.Process.Pid)
 
-	// Store the PID in a file for later use (e.g., for stop or status commands)
-	pidFile := filepath.Join(os.TempDir(), "cachprax.pid")
-	err = os.WriteFile(pidFile, []byte(fmt.Sprintf("%d", cmd.Process.Pid)), 0644)
+	err = file.SaveDataToFile(cmd.Process.Pid, origin, port)
 	if err != nil {
-		return fmt.Errorf("could not write PID file: %v", err)
+		return fmt.Errorf("could not save server info to file: %v", err)
 	}
 
 	return nil

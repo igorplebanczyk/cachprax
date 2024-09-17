@@ -1,0 +1,21 @@
+package cmd
+
+import (
+	"cachprax/cmd/internal/file"
+	"fmt"
+	"github.com/urfave/cli/v2"
+)
+
+func statusCommand(c *cli.Context) error {
+	serverInfo, err := file.GetDataFromFile()
+	if err != nil {
+		fmt.Printf("Server status: not running\n")
+		return nil
+	}
+
+	fmt.Printf("Server status: running\n")
+	fmt.Printf("Origin: %s\n", serverInfo.Origin)
+	fmt.Printf("Port: %d\n", serverInfo.Port)
+
+	return nil
+}

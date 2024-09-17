@@ -58,6 +58,11 @@ func NewApp() *cli.App {
 				Usage:  "Stop the caching proxy server",
 				Action: stopCommand,
 			},
+			{
+				Name:   "status",
+				Usage:  "Get the status of the caching proxy server",
+				Action: statusCommand,
+			},
 		},
 		Flags: []cli.Flag{},
 	}
