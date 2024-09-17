@@ -51,6 +51,11 @@ func NewApp() *cli.App {
 						Usage:    "The port on which the caching proxy server will listen on",
 						Required: true,
 					},
+					&cli.BoolFlag{
+						Name:     "override",
+						Usage:    "This command should not be ran manually; use this to override this behavior",
+						Required: true,
+					},
 				},
 			},
 			{

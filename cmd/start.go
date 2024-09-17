@@ -20,7 +20,7 @@ func startCommand(c *cli.Context) error {
 	}
 
 	// Start a new process for the server in the background
-	cmd := exec.Command(exePath, "runserver", "--origin", origin, "--port", strconv.Itoa(port))
+	cmd := exec.Command(exePath, "runserver", "--origin", origin, "--port", strconv.Itoa(port), "--override")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
