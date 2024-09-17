@@ -20,7 +20,7 @@ func (cache *Cache) IsCached(cacheKey string) bool {
 	return found
 }
 
-func (cache *Cache) GetCached(cacheKey string) []byte {
+func (cache *Cache) Get(cacheKey string) []byte {
 	data, found := cache.internalCache.Get(cacheKey)
 	if !found {
 		return nil
@@ -28,6 +28,10 @@ func (cache *Cache) GetCached(cacheKey string) []byte {
 	return data.([]byte)
 }
 
-func (cache *Cache) SetCached(cacheKey string, data []byte) {
+func (cache *Cache) Set(cacheKey string, data []byte) {
 	cache.internalCache.Set(cacheKey, data, goCache.NoExpiration)
+}
+
+func (cache *Cache) Clear() {
+	cache.internalCache.Flush()
 }
