@@ -1,6 +1,8 @@
 package cmd
 
-import "github.com/urfave/cli/v2"
+import (
+	"github.com/urfave/cli/v2"
+)
 
 func NewApp() *cli.App {
 	return &cli.App{
@@ -86,6 +88,5 @@ func NewApp() *cli.App {
 				},
 			},
 		},
-		Flags: []cli.Flag{},
 	}
 }

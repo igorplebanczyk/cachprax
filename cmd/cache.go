@@ -31,16 +31,16 @@ func clearCache() error {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:3001/cache/clear", nil)
 	if err != nil {
-		return fmt.Errorf("failed to create a request: %v", err)
+		return fmt.Errorf("\nfailed to create a request: %v\n", err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to send a request: %v", err)
+		return fmt.Errorf("\nfailed to send a request: %v\n", err)
 	}
 
 	if resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("failed to clear the cache: %v", err)
+		return fmt.Errorf("\nfailed to clear the cache: %v\n", err)
 	}
 
 	fmt.Printf("Cache cleared\n")
@@ -51,22 +51,21 @@ func countCache() error {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:3001/cache/count", nil)
 	if err != nil {
-		return fmt.Errorf("failed to create a request: %v", err)
+		return fmt.Errorf("\nfailed to create a request: %v\n", err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to send a request: %v", err)
+		return fmt.Errorf("\nfailed to send a request: %v\n", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to get the cache count: %v", err)
+		return fmt.Errorf("\nfailed to get the cache count: %v\n", err)
 	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
-		return fmt.Errorf("failed to read the response body: %v", err)
+		return fmt.Errorf("\nfailed to read the response body: %v\n", err)
 	}
 	bodyString := string(bodyBytes)
 

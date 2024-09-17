@@ -13,18 +13,18 @@ func conntestCommand(c *cli.Context) error {
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodHead, origin, nil)
 	if err != nil {
-		return fmt.Errorf("error creating a request: %v", err)
+		return fmt.Errorf("\nerror creating a request: %v\n", err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error sending a HEAD request: %v", err)
+		return fmt.Errorf("\nerror sending a HEAD request: %v\n", err)
 	}
 
 	fmt.Printf("Sending a HEAD request...\n")
 
 	if resp.StatusCode > 299 {
-		return fmt.Errorf("error: %v", resp.Status)
+		return fmt.Errorf("\nerror: %v\n", resp.Status)
 	}
 
 	fmt.Printf("Received status code %d\nConnection successful\n", resp.StatusCode)
