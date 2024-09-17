@@ -22,6 +22,7 @@ func (cfg *Config) StartServer() error {
 	}
 
 	cacheMux.HandleFunc("/cache/clear", cfg.clearCacheHandler)
+	cacheMux.HandleFunc("/cache/count", cfg.countCacheHandler)
 
 	go func() {
 		err := cacheServer.ListenAndServe()

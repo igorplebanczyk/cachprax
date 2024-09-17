@@ -73,6 +73,11 @@ func NewApp() *cli.App {
 						Usage:    "Clear the cache",
 						Required: false,
 					},
+					&cli.BoolFlag{
+						Name:     "count",
+						Usage:    "Get the number of items in the cache",
+						Required: false,
+					},
 				},
 			},
 		},

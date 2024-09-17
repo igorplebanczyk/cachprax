@@ -35,3 +35,7 @@ func (cache *Cache) Set(cacheKey string, data []byte) {
 func (cache *Cache) Clear() {
 	cache.internalCache.Flush()
 }
+
+func (cache *Cache) Count() int {
+	return cache.internalCache.ItemCount()
+}
