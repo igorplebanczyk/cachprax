@@ -36,6 +36,23 @@ func NewApp() *cli.App {
 					},
 				},
 			},
+			{
+				Name:   "runserver",
+				Usage:  "Run the caching proxy server",
+				Action: runserverCommand,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "origin",
+						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+					&cli.IntFlag{
+						Name:     "port",
+						Usage:    "The port on which the caching proxy server will listen on",
+						Required: true,
+					},
+				},
+			},
 		},
 		Flags: []cli.Flag{},
 	}

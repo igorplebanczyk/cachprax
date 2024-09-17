@@ -1,29 +1,41 @@
 package cmd
 
 import (
-	"cachprax/internal/cache"
-	"cachprax/internal/server"
 	"fmt"
 	"github.com/urfave/cli/v2"
-	"net/url"
-	"time"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
 )
 
 func startCommand(c *cli.Context) error {
-	originURL, err := url.Parse(c.String("origin"))
+	port := c.Int("port")
+	origin := c.String("origin")
+
+	// Get the path to the currently running binary
+	exePath, err := os.Executable()
 	if err != nil {
-		return err
+		return fmt.Errorf("could not get executable path: %v", err)
 	}
 
-	cfg := &server.Config{
-		Port:   c.Int("port"),
-		Origin: originURL,
-		Cache:  cache.NewCache(5*time.Minute, 10*time.Minute),
+	// Start a new process for the server in the background
+	cmd := exec.Command(exePath, "runserver", "--origin", origin, "--port", strconv.Itoa(port))
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Start()
+	if err != nil {
+		return fmt.Errorf("could not start server process: %v", err)
 	}
 
-	err = cfg.StartServer()
+	fmt.Printf("Server started in background with PID: %d\n", cmd.Process.Pid)
+
+	// Store the PID in a file for later use (e.g., for stop or status commands)
+	pidFile := filepath.Join(os.TempDir(), "cachprax.pid")
+	err = os.WriteFile(pidFile, []byte(fmt.Sprintf("%d", cmd.Process.Pid)), 0644)
 	if err != nil {
-		fmt.Printf("error starting server\n")
+		return fmt.Errorf("could not write PID file: %v", err)
 	}
 
 	return nil
