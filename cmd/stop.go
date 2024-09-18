@@ -13,23 +13,23 @@ func stopCommand(c *cli.Context) error {
 	ok := file.IsProcessRunning(serverInfo.PID)
 
 	if err != nil || !ok {
-		return fmt.Errorf("\nserver is not running\n")
+		return fmt.Errorf("server is not running")
 	}
 
 	process, err := os.FindProcess(serverInfo.PID)
 	if err != nil {
-		return fmt.Errorf("\ncould not find process: %v\n", err)
+		return fmt.Errorf("could not find process: %v", err)
 	}
 
 	err = process.Kill()
 	if err != nil {
-		return fmt.Errorf("\ncould not kill process: %v\n", err)
+		return fmt.Errorf("could not kill process: %v", err)
 	}
 
 	pidFile := filepath.Join(os.TempDir(), "cachprax.json")
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("\ncould not remove JSON file: %v\n", err)
+		return fmt.Errorf("could not remove JSON file: %v", err)
 	}
 
 	fmt.Println("Server stopped.")

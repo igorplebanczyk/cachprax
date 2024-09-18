@@ -12,7 +12,7 @@ import (
 func startCommand(c *cli.Context) error {
 	_, err := file.GetDataFromFile()
 	if err == nil {
-		return fmt.Errorf("\nserver already running\n")
+		return fmt.Errorf("server already running")
 	}
 
 	port := c.Int("port")
@@ -21,7 +21,7 @@ func startCommand(c *cli.Context) error {
 	// Get the path to the currently running binary
 	exePath, err := os.Executable()
 	if err != nil {
-		return fmt.Errorf("\ncould not get executable path: %v\n", err)
+		return fmt.Errorf("could not get executable path: %v", err)
 	}
 
 	// Start a new process for the server in the background
@@ -31,14 +31,14 @@ func startCommand(c *cli.Context) error {
 
 	err = cmd.Start()
 	if err != nil {
-		return fmt.Errorf("\ncould not start server process: %v\n", err)
+		return fmt.Errorf("could not start server process: %v", err)
 	}
 
-	fmt.Printf("Server started in background with PID: %d\n", cmd.Process.Pid)
+	fmt.Printf("Server started in background with PID: %d", cmd.Process.Pid)
 
 	err = file.SaveDataToFile(cmd.Process.Pid, origin, port)
 	if err != nil {
-		return fmt.Errorf("\ncould not save server info to file: %v\n", err)
+		return fmt.Errorf("could not save server info to file: %v", err)
 	}
 
 	return nil

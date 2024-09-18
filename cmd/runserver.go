@@ -11,7 +11,7 @@ import (
 
 func runserverCommand(c *cli.Context) error {
 	if !c.Bool("override") {
-		return fmt.Errorf("\nthis command should not be ran manually; use the start command instead\n")
+		return fmt.Errorf("this command should not be ran manually; use the start command instead")
 	}
 
 	port := c.Int("port")

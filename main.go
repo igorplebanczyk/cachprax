@@ -12,4 +12,9 @@ func main() {
 	if err != nil {
 		fmt.Printf("error running cli: %v", err)
 	}
+
+	_, err = fmt.Fprintf(os.Stdout, "\n") // Add a line break for cleaner output
+	if err != nil {
+		return
+	}
 }

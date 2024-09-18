@@ -11,7 +11,7 @@ func statusCommand(c *cli.Context) error {
 	ok := file.IsProcessRunning(serverInfo.PID)
 
 	if err != nil || !ok {
-		fmt.Printf("Server status: not running\n")
+		fmt.Printf("Server status: not running")
 		return nil
 	}
 
