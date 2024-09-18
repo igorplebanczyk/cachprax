@@ -100,3 +100,4 @@ To install Cachprax using a precompiled binary from the GitHub releases:
 ## Notes
 * Port 3001 is reserved for internal usage.
 * A `cachprax.json` file is created in the `tmp` directory to store server metadata.
+* Designed as part of this [project](https://roadmap.sh/projects/caching-server)
