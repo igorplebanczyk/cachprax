@@ -8,7 +8,9 @@ import (
 
 func statusCommand(c *cli.Context) error {
 	serverInfo, err := file.GetDataFromFile()
-	if err != nil {
+	ok := file.IsProcessRunning(serverInfo.PID)
+
+	if err != nil || !ok {
 		fmt.Printf("Server status: not running\n")
 		return nil
 	}

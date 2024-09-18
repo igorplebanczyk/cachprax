@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"syscall"
 )
 
 type ServerInfo struct {
@@ -48,4 +49,14 @@ func GetDataFromFile() (ServerInfo, error) {
 	}
 
 	return serverInfo, nil
+}
+
+func IsProcessRunning(pid int) bool {
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		return false
+	}
+
+	err = process.Signal(os.Signal(syscall.Signal(0)))
+	return err == nil
 }

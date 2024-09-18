@@ -10,6 +10,11 @@ import (
 )
 
 func startCommand(c *cli.Context) error {
+	_, err := file.GetDataFromFile()
+	if err == nil {
+		return fmt.Errorf("\nserver already running\n")
+	}
+
 	port := c.Int("port")
 	origin := c.String("origin")
 

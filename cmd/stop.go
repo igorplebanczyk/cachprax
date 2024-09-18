@@ -10,8 +10,10 @@ import (
 
 func stopCommand(c *cli.Context) error {
 	serverInfo, err := file.GetDataFromFile()
-	if err != nil {
-		return fmt.Errorf("\ncould not get server info from file: %v\n", err)
+	ok := file.IsProcessRunning(serverInfo.PID)
+
+	if err != nil || !ok {
+		return fmt.Errorf("\nserver is not running\n")
 	}
 
 	process, err := os.FindProcess(serverInfo.PID)
