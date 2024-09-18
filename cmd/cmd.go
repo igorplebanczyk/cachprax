@@ -7,20 +7,8 @@ import (
 func NewApp() *cli.App {
 	return &cli.App{
 		Name:  "cachprax",
-		Usage: "A simple caching proxy",
+		Usage: "simple caching proxy server",
 		Commands: []*cli.Command{
-			{
-				Name:   "conntest",
-				Usage:  "Test the connection to the origin server",
-				Action: conntestCommand,
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:     "origin",
-						Usage:    "The URL of the origin server",
-						Required: true,
-					},
-				},
-			},
 			{
 				Name:   "start",
 				Usage:  "Start the caching proxy server",
@@ -34,28 +22,6 @@ func NewApp() *cli.App {
 					&cli.IntFlag{
 						Name:     "port",
 						Usage:    "The port on which the caching proxy server will listen on",
-						Required: true,
-					},
-				},
-			},
-			{
-				Name:   "runserver",
-				Usage:  "Run the caching proxy server",
-				Action: runserverCommand,
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:     "origin",
-						Usage:    "The URL of the origin server",
-						Required: true,
-					},
-					&cli.IntFlag{
-						Name:     "port",
-						Usage:    "The port on which the caching proxy server will listen on",
-						Required: true,
-					},
-					&cli.BoolFlag{
-						Name:     "override",
-						Usage:    "This command should not be ran manually; use this to override this behavior",
 						Required: true,
 					},
 				},
@@ -84,6 +50,40 @@ func NewApp() *cli.App {
 						Name:     "count",
 						Usage:    "Get the number of items in the cache",
 						Required: false,
+					},
+				},
+			},
+			{
+				Name:   "conntest",
+				Usage:  "Test the connection to the origin server",
+				Action: conntestCommand,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "origin",
+						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+				},
+			},
+			{
+				Name:   "runserver",
+				Usage:  "Run the caching proxy server - for internal use only",
+				Action: runserverCommand,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "origin",
+						Usage:    "The URL of the origin server",
+						Required: true,
+					},
+					&cli.IntFlag{
+						Name:     "port",
+						Usage:    "The port on which the caching proxy server will listen on",
+						Required: true,
+					},
+					&cli.BoolFlag{
+						Name:     "override",
+						Usage:    "This command should not be ran manually; use this to override this behavior",
+						Required: true,
 					},
 				},
 			},
