@@ -24,6 +24,18 @@ func NewApp() *cli.App {
 						Usage:    "The port on which the caching proxy server will listen on",
 						Required: true,
 					},
+					&cli.IntFlag{
+						Name:        "cache-expire",
+						Usage:       "The time in minutes after which the cache will expire; default is 5 minutes",
+						DefaultText: "5",
+						Required:    false,
+					},
+					&cli.IntFlag{
+						Name:        "cache-purge",
+						Usage:       "The time in minutes after which the cache will be purged; default is 10 minutes",
+						DefaultText: "10",
+						Required:    false,
+					},
 				},
 			},
 			{
@@ -79,6 +91,16 @@ func NewApp() *cli.App {
 						Name:     "port",
 						Usage:    "The port on which the caching proxy server will listen on",
 						Required: true,
+					},
+					&cli.IntFlag{
+						Name:     "cache-expire",
+						Usage:    "The time in seconds after which the cache will expire; default is 5 minutes",
+						Required: false,
+					},
+					&cli.IntFlag{
+						Name:     "cache-purge",
+						Usage:    "The time in seconds after which the cache will be purged; default is 10 minutes",
+						Required: false,
 					},
 					&cli.BoolFlag{
 						Name:     "override",

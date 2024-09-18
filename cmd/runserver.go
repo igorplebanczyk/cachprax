@@ -19,11 +19,13 @@ func runserverCommand(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	cacheExpire := time.Duration(c.Int("cache-expire")) * time.Minute
+	cachePurge := time.Duration(c.Int("cache-purge")) * time.Minute
 
 	cfg := &server.Config{
 		Port:   port,
 		Origin: originURL,
-		Cache:  cache.NewCache(5*time.Minute, 10*time.Minute),
+		Cache:  cache.NewCache(cacheExpire, cachePurge),
 	}
 
 	return cfg.StartServer()
