@@ -2,14 +2,21 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"net/http"
+
+	"github.com/spf13/cobra"
 )
 
-func conntestCommand(c *cli.Context) error {
-	origin := c.String("origin")
+func conntestCommand(cmd *cobra.Command, args []string) error {
+	// Get the value of the --origin flag
+	origin, err := cmd.Flags().GetString("origin")
+	if err != nil {
+		return fmt.Errorf("error getting origin flag: %v", err)
+	}
+
 	fmt.Printf("Attempting to connect to %s...\n", origin)
 
+	// Create the HTTP client and request
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodHead, origin, nil)
 	if err != nil {
@@ -30,4 +37,20 @@ func conntestCommand(c *cli.Context) error {
 	fmt.Printf("Received status code %d\nConnection successful\n", resp.StatusCode)
 
 	return nil
+}
+
+var conntest = &cobra.Command{
+	Use:   "conntest",
+	Short: "Test connection to the origin server",
+	Long:  "Test connection to the origin server by sending a HEAD request",
+	RunE:  conntestCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(conntest)
+
+	conntest.Flags().StringP("origin", "o", "", "Origin server to test connection (required)")
+	if err := conntest.MarkFlagRequired("origin"); err != nil {
+		return
+	}
 }
