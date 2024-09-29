@@ -7,8 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func conntestCommand(cmd *cobra.Command, args []string) error {
-	// Get the value of the --origin flag
+func conntestCommand(cmd *cobra.Command, _ []string) error {
 	origin, err := cmd.Flags().GetString("origin")
 	if err != nil {
 		return fmt.Errorf("error getting origin flag: %v", err)
@@ -16,7 +15,6 @@ func conntestCommand(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Attempting to connect to %s...\n", origin)
 
-	// Create the HTTP client and request
 	client := http.Client{}
 	req, err := http.NewRequest(http.MethodHead, origin, nil)
 	if err != nil {
