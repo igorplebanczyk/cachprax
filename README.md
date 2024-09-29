@@ -1,6 +1,8 @@
 # Cachprax
 Cachprax is a simple caching proxy server. It was made as a learning project, and was not tested in a production environment (caching proxies are pretty much obsolete anyway).
 <br><br>
+*Requires a Linux system*
+<br>
 *Requires Go 1.22 or later.*
 
 ## Features
@@ -98,3 +100,4 @@ To install Cachprax using a precompiled binary from the GitHub releases:
 ## Notes
 * Port 3001 is reserved for internal usage.
 * A `cachprax.json` file is created in the `tmp` directory to store server metadata.
+* Designed as part of this [project](https://roadmap.sh/projects/caching-server)
