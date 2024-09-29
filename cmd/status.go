@@ -3,21 +3,37 @@ package cmd
 import (
 	"cachprax/cmd/internal/file"
 	"fmt"
-	"github.com/urfave/cli/v2"
+
+	"github.com/spf13/cobra"
 )
 
-func statusCommand(c *cli.Context) error {
+func statusCommand(cmd *cobra.Command, _ []string) error {
 	serverInfo, err := file.GetDataFromFile()
-	ok := file.IsProcessRunning(serverInfo.PID)
-
-	if err != nil || !ok {
-		fmt.Printf("Server status: not running")
+	if err != nil {
+		fmt.Println("Server status: not running (could not find server info file)")
 		return nil
 	}
 
-	fmt.Printf("Server status: running\n")
+	ok := file.IsProcessRunning(serverInfo.PID)
+	if !ok {
+		fmt.Println("Server status: not running")
+		return nil
+	}
+
+	fmt.Println("Server status: running")
 	fmt.Printf("Origin: %s\n", serverInfo.Origin)
 	fmt.Printf("Port: %d\n", serverInfo.Port)
 
 	return nil
+}
+
+var statusCmd = &cobra.Command{
+	Use:   "status",
+	Short: "Check the status of the caching proxy server",
+	Long:  "Check if the caching proxy server is running and display its origin and port if it is.",
+	RunE:  statusCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(statusCmd)
 }
