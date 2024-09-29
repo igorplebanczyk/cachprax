@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func stopCommand(cmd *cobra.Command, _ []string) error {
+func stopCommand(_ *cobra.Command, _ []string) error {
 	serverInfo, err := file.GetDataFromFile()
 	if err != nil {
 		return fmt.Errorf("server is not running or server info file is missing")
