@@ -2,13 +2,24 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
+
+	"github.com/spf13/cobra"
 )
 
-func cacheCommand(c *cli.Context) error {
-	if c.Bool("clear") {
+func cacheCommand(cmd *cobra.Command, _ []string) error {
+	clearFlag, err := cmd.Flags().GetBool("clear")
+	if err != nil {
+		return err
+	}
+
+	countFlag, err := cmd.Flags().GetBool("count")
+	if err != nil {
+		return err
+	}
+
+	if clearFlag {
 		err := clearCache()
 		if err != nil {
 			return err
@@ -16,7 +27,7 @@ func cacheCommand(c *cli.Context) error {
 		return nil
 	}
 
-	if c.Bool("count") {
+	if countFlag {
 		err := countCache()
 		if err != nil {
 			return err
@@ -24,7 +35,7 @@ func cacheCommand(c *cli.Context) error {
 		return nil
 	}
 
-	return nil
+	return fmt.Errorf("no operation specified, please use --clear or --count")
 }
 
 func clearCache() error {
@@ -69,6 +80,20 @@ func countCache() error {
 	}
 	bodyString := string(bodyBytes)
 
-	fmt.Printf("Cache count: %v", bodyString)
+	fmt.Printf("Cache count: %v\n", bodyString)
 	return nil
+}
+
+var cacheCmd = &cobra.Command{
+	Use:   "cache",
+	Short: "Manage cache operations",
+	Long:  "Clear the cache or retrieve the cache item count from the caching proxy server.",
+	RunE:  cacheCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(cacheCmd)
+
+	cacheCmd.Flags().BoolP("clear", "c", false, "Clear the cache")
+	cacheCmd.Flags().BoolP("count", "n", false, "Show the number of items in the cache")
 }
