@@ -37,7 +37,7 @@ func stopCommand(_ *cobra.Command, _ []string) error {
 		return fmt.Errorf("could not remove JSON file: %v", err)
 	}
 
-	fmt.Print("Server stopped.")
+	fmt.Printf("Server stopped.\n")
 	return nil
 }
 
