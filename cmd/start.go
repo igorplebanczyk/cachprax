@@ -10,6 +10,21 @@ import (
 	"strconv"
 )
 
+var startCmd = &cobra.Command{
+	Use:   "start",
+	Short: "Start the caching proxy server",
+	Long:  "Start the caching proxy server with the specified origin, port, cache expiration, and cache purge settings.",
+	RunE:  startCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(startCmd)
+	startCmd.Flags().StringP("origin", "o", "", "Origin server URL (required)")
+	startCmd.Flags().IntP("port", "p", -1, "Port to run the server on")
+	startCmd.Flags().Int("cache-expire", -1, "Cache expiration duration in minutes")
+	startCmd.Flags().Int("cache-purge", -1, "Cache purge interval in minutes")
+}
+
 func startCommand(cmd *cobra.Command, _ []string) error {
 	_, err := state.GetDataFromFile()
 	if err == nil {
@@ -72,20 +87,4 @@ func startCommand(cmd *cobra.Command, _ []string) error {
 	}
 
 	return nil
-}
-
-var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Start the caching proxy server",
-	Long:  "Start the caching proxy server with the specified origin, port, cache expiration, and cache purge settings.",
-	RunE:  startCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(startCmd)
-
-	startCmd.Flags().StringP("origin", "o", "", "Origin server URL (required)")
-	startCmd.Flags().IntP("port", "p", -1, "Port to run the server on")
-	startCmd.Flags().Int("cache-expire", -1, "Cache expiration duration in minutes")
-	startCmd.Flags().Int("cache-purge", -1, "Cache purge interval in minutes")
 }

@@ -8,6 +8,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var cacheCmd = &cobra.Command{
+	Use:   "cache",
+	Short: "Manage cache operations",
+	Long:  "Clear the cache or retrieve the cache item count from the caching proxy server.",
+	RunE:  cacheCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(cacheCmd)
+	cacheCmd.Flags().BoolP("clear", "c", false, "Clear the cache")
+	cacheCmd.Flags().BoolP("count", "n", false, "Show the number of items in the cache")
+}
+
 func cacheCommand(cmd *cobra.Command, _ []string) error {
 	clearFlag, err := cmd.Flags().GetBool("clear")
 	if err != nil {
@@ -82,18 +95,4 @@ func countCache() error {
 
 	fmt.Printf("Cache count: %v\n", bodyString)
 	return nil
-}
-
-var cacheCmd = &cobra.Command{
-	Use:   "cache",
-	Short: "Manage cache operations",
-	Long:  "Clear the cache or retrieve the cache item count from the caching proxy server.",
-	RunE:  cacheCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(cacheCmd)
-
-	cacheCmd.Flags().BoolP("clear", "c", false, "Clear the cache")
-	cacheCmd.Flags().BoolP("count", "n", false, "Show the number of items in the cache")
 }

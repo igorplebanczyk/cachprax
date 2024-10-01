@@ -9,6 +9,19 @@ import (
 	"path/filepath"
 )
 
+var configCmd = &cobra.Command{
+	Use:   "config",
+	Short: "Manage configuration values",
+	Long:  "Manage configuration values in the cachprax.yml file.",
+	RunE:  configCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(configCmd)
+	configCmd.Flags().BoolP("reset", "r", false, "Reset the configuration file to default values")
+	configCmd.Flags().BoolP("set", "s", false, "Set a configuration value")
+}
+
 func configCommand(cmd *cobra.Command, args []string) error {
 	reset, err := cmd.Flags().GetBool("reset")
 	if err != nil {
@@ -57,18 +70,4 @@ func configCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	return fmt.Errorf("either --reset or --set flag must be provided")
-}
-
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Manage configuration values",
-	Long:  "Manage configuration values in the cachprax.yml file.",
-	RunE:  configCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(configCmd)
-
-	configCmd.Flags().BoolP("reset", "r", false, "Reset the configuration file to default values")
-	configCmd.Flags().BoolP("set", "s", false, "Set a configuration value")
 }

@@ -7,6 +7,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var conntest = &cobra.Command{
+	Use:   "conntest",
+	Short: "Test connection to the origin server",
+	Long:  "Test connection to the origin server by sending a HEAD request",
+	RunE:  conntestCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(conntest)
+	conntest.Flags().StringP("origin", "o", "", "Origin server to test connection (required)")
+	if err := conntest.MarkFlagRequired("origin"); err != nil {
+		return
+	}
+}
+
 func conntestCommand(cmd *cobra.Command, _ []string) error {
 	origin, err := cmd.Flags().GetString("origin")
 	if err != nil {
@@ -35,20 +50,4 @@ func conntestCommand(cmd *cobra.Command, _ []string) error {
 	fmt.Printf("Received status code %d\nConnection successful\n", resp.StatusCode)
 
 	return nil
-}
-
-var conntest = &cobra.Command{
-	Use:   "conntest",
-	Short: "Test connection to the origin server",
-	Long:  "Test connection to the origin server by sending a HEAD request",
-	RunE:  conntestCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(conntest)
-
-	conntest.Flags().StringP("origin", "o", "", "Origin server to test connection (required)")
-	if err := conntest.MarkFlagRequired("origin"); err != nil {
-		return
-	}
 }

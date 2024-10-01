@@ -9,6 +9,22 @@ import (
 	"time"
 )
 
+var runserverCmd = &cobra.Command{
+	Use:   "runserver",
+	Short: "Start the proxy server manually (internal use)",
+	Long:  "This command starts the proxy server manually, but it should be run only via the start command.",
+	RunE:  runserverCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(runserverCmd)
+	runserverCmd.Flags().Bool("override", false, "Override manual check (for internal use only)")
+	runserverCmd.Flags().IntP("port", "p", 8080, "Port to run the server on")
+	runserverCmd.Flags().StringP("origin", "o", "", "Origin server URL")
+	runserverCmd.Flags().Int("cache-expire", 10, "Cache expiration duration in minutes")
+	runserverCmd.Flags().Int("cache-purge", 30, "Cache purge interval in minutes")
+}
+
 func runserverCommand(cmd *cobra.Command, _ []string) error {
 	override, err := cmd.Flags().GetBool("override")
 	if err != nil {
@@ -48,21 +64,4 @@ func runserverCommand(cmd *cobra.Command, _ []string) error {
 	}
 
 	return cfg.StartServer()
-}
-
-var runserverCmd = &cobra.Command{
-	Use:   "runserver",
-	Short: "Start the proxy server manually (internal use)",
-	Long:  "This command starts the proxy server manually, but it should be run only via the start command.",
-	RunE:  runserverCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(runserverCmd)
-
-	runserverCmd.Flags().Bool("override", false, "Override manual check (for internal use only)")
-	runserverCmd.Flags().IntP("port", "p", 8080, "Port to run the server on")
-	runserverCmd.Flags().StringP("origin", "o", "", "Origin server URL")
-	runserverCmd.Flags().Int("cache-expire", 10, "Cache expiration duration in minutes")
-	runserverCmd.Flags().Int("cache-purge", 30, "Cache purge interval in minutes")
 }

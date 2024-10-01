@@ -9,6 +9,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var stopCmd = &cobra.Command{
+	Use:   "stop",
+	Short: "Stop the running caching proxy server",
+	Long:  "Stop the running caching proxy server by killing the process and removing its PID state.",
+	RunE:  stopCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(stopCmd)
+}
+
 func stopCommand(_ *cobra.Command, _ []string) error {
 	serverInfo, err := state.GetDataFromFile()
 	if err != nil {
@@ -39,15 +50,4 @@ func stopCommand(_ *cobra.Command, _ []string) error {
 
 	fmt.Printf("Server stopped.\n")
 	return nil
-}
-
-var stopCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "Stop the running caching proxy server",
-	Long:  "Stop the running caching proxy server by killing the process and removing its PID state.",
-	RunE:  stopCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(stopCmd)
 }

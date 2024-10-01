@@ -6,6 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var statusCmd = &cobra.Command{
+	Use:   "status",
+	Short: "Check the status of the caching proxy server",
+	Long:  "Check if the caching proxy server is running and display its origin and port if it is.",
+	RunE:  statusCommand,
+}
+
+func init() {
+	rootCmd.AddCommand(statusCmd)
+}
+
 func statusCommand(_ *cobra.Command, _ []string) error {
 	serverInfo, err := state.GetDataFromFile()
 	if err != nil {
@@ -24,15 +35,4 @@ func statusCommand(_ *cobra.Command, _ []string) error {
 	fmt.Printf("Port: %d\n", serverInfo.Port)
 
 	return nil
-}
-
-var statusCmd = &cobra.Command{
-	Use:   "status",
-	Short: "Check the status of the caching proxy server",
-	Long:  "Check if the caching proxy server is running and display its origin and port if it is.",
-	RunE:  statusCommand,
-}
-
-func init() {
-	rootCmd.AddCommand(statusCmd)
 }
