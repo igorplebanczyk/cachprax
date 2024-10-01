@@ -18,7 +18,7 @@ func startCommand(cmd *cobra.Command, _ []string) error {
 
 	port, err := cmd.Flags().GetInt("port")
 	if port == -1 {
-		port = viper.GetInt("default_port")
+		port = viper.GetInt("proxy_port")
 	}
 	if err != nil {
 		return err

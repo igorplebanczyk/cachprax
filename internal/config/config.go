@@ -9,7 +9,7 @@ import (
 
 var configFileName = "cachprax"
 var configFileType = "yaml"
-var defaultConfig = []byte(`default_port: 8080
+var defaultConfig = []byte(`proxy_port: 3000
 cache_port: 3001
 cache_expire: 10
 cache_purge: 30
