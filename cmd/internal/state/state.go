@@ -1,4 +1,4 @@
-package file
+package state
 
 import (
 	"encoding/json"
@@ -29,7 +29,7 @@ func SaveDataToFile(pid int, origin string, port int) error {
 	pidFile := filepath.Join(os.TempDir(), "cachprax.json")
 	err = os.WriteFile(pidFile, serverInfoJSON, 0644)
 	if err != nil {
-		return fmt.Errorf("could not write server info to file: %v", err)
+		return fmt.Errorf("could not write server info to state: %v", err)
 	}
 
 	return nil
@@ -39,7 +39,7 @@ func GetDataFromFile() (ServerInfo, error) {
 	pidFile := filepath.Join(os.TempDir(), "cachprax.json")
 	fileContent, err := os.ReadFile(pidFile)
 	if err != nil {
-		return ServerInfo{}, fmt.Errorf("could not read JSON file: %v", err)
+		return ServerInfo{}, fmt.Errorf("could not read JSON state: %v", err)
 	}
 
 	serverInfo := ServerInfo{}

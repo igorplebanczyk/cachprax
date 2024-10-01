@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"cachprax/cmd/internal/file"
+	"cachprax/cmd/internal/state"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,7 +11,7 @@ import (
 )
 
 func startCommand(cmd *cobra.Command, _ []string) error {
-	_, err := file.GetDataFromFile()
+	_, err := state.GetDataFromFile()
 	if err == nil {
 		return fmt.Errorf("server already running")
 	}
@@ -66,9 +66,9 @@ func startCommand(cmd *cobra.Command, _ []string) error {
 
 	fmt.Printf("Server started in background with PID: %d\n", runserverCmd.Process.Pid)
 
-	err = file.SaveDataToFile(runserverCmd.Process.Pid, origin, port)
+	err = state.SaveDataToFile(runserverCmd.Process.Pid, origin, port)
 	if err != nil {
-		return fmt.Errorf("could not save server info to file: %v", err)
+		return fmt.Errorf("could not save server info to state: %v", err)
 	}
 
 	return nil

@@ -1,19 +1,19 @@
 package cmd
 
 import (
-	"cachprax/cmd/internal/file"
+	"cachprax/cmd/internal/state"
 	"fmt"
 	"github.com/spf13/cobra"
 )
 
 func statusCommand(_ *cobra.Command, _ []string) error {
-	serverInfo, err := file.GetDataFromFile()
+	serverInfo, err := state.GetDataFromFile()
 	if err != nil {
-		fmt.Println("Server status: not running (could not find server info file)")
+		fmt.Println("Server status: not running (could not find server info state)")
 		return nil
 	}
 
-	ok := file.IsProcessRunning(serverInfo.PID)
+	ok := state.IsProcessRunning(serverInfo.PID)
 	if !ok {
 		fmt.Println("Server status: not running")
 		return nil

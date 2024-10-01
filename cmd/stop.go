@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"cachprax/cmd/internal/file"
+	"cachprax/cmd/internal/state"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,12 +10,12 @@ import (
 )
 
 func stopCommand(_ *cobra.Command, _ []string) error {
-	serverInfo, err := file.GetDataFromFile()
+	serverInfo, err := state.GetDataFromFile()
 	if err != nil {
-		return fmt.Errorf("server is not running or server info file is missing")
+		return fmt.Errorf("server is not running or server info state is missing")
 	}
 
-	ok := file.IsProcessRunning(serverInfo.PID)
+	ok := state.IsProcessRunning(serverInfo.PID)
 	if !ok {
 		return fmt.Errorf("server is not running")
 	}
@@ -30,11 +30,11 @@ func stopCommand(_ *cobra.Command, _ []string) error {
 		return fmt.Errorf("could not kill process: %v", err)
 	}
 
-	// Remove the PID file
+	// Remove the PID state
 	pidFile := filepath.Join(os.TempDir(), "cachprax.json")
 	err = os.Remove(pidFile)
 	if err != nil {
-		return fmt.Errorf("could not remove JSON file: %v", err)
+		return fmt.Errorf("could not remove JSON state: %v", err)
 	}
 
 	fmt.Printf("Server stopped.\n")
@@ -44,7 +44,7 @@ func stopCommand(_ *cobra.Command, _ []string) error {
 var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stop the running caching proxy server",
-	Long:  "Stop the running caching proxy server by killing the process and removing its PID file.",
+	Long:  "Stop the running caching proxy server by killing the process and removing its PID state.",
 	RunE:  stopCommand,
 }
 
