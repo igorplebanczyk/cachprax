@@ -7,31 +7,34 @@ import (
 	"path/filepath"
 )
 
+var configFileName = "cachprax"
+var configFileType = "yaml"
+var defaultConfig = []byte(`default_port: 8080
+cache_port: 3001
+cache_expire: 10
+cache_purge: 30
+origin: ""
+`)
+
 func Init() error {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("could not get user home directory: %v", err)
 	}
 
-	configPath := filepath.Join(home, "cachprax.yml")
+	configFile := configFileName + "." + configFileType
+	configPath := filepath.Join(home, configFile)
 
-	// Check if the config state exists
+	// Create default config file if it does not exist
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		// Create the config state with default values
-		defaultConfig := []byte(`default_port: 8080
-								cache_port: 3001
-								cache_expire: 10
-								cache_purge: 30
-								origin: ""
-								`)
 		err = os.WriteFile(configPath, defaultConfig, 0644)
 		if err != nil {
 			return fmt.Errorf("could not write default config state: %v", err)
 		}
 	}
 
-	viper.SetConfigName("cachprax")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(configFileName)
+	viper.SetConfigType(configFileType)
 	viper.AddConfigPath(home)
 
 	if err := viper.ReadInConfig(); err != nil {
