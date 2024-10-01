@@ -3,11 +3,10 @@ package cmd
 import (
 	"cachprax/cmd/internal/file"
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
-func statusCommand(cmd *cobra.Command, _ []string) error {
+func statusCommand(_ *cobra.Command, _ []string) error {
 	serverInfo, err := file.GetDataFromFile()
 	if err != nil {
 		fmt.Println("Server status: not running (could not find server info file)")

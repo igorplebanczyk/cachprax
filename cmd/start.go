@@ -4,6 +4,7 @@ import (
 	"cachprax/cmd/internal/file"
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 	"os/exec"
 	"strconv"
@@ -16,18 +17,33 @@ func startCommand(cmd *cobra.Command, _ []string) error {
 	}
 
 	port, err := cmd.Flags().GetInt("port")
+	if port == -1 {
+		port = viper.GetInt("default_port")
+	}
 	if err != nil {
 		return err
 	}
+
 	origin, err := cmd.Flags().GetString("origin")
+	if origin == "" {
+		origin = viper.GetString("origin")
+	}
 	if err != nil {
 		return err
 	}
+
 	cacheExpire, err := cmd.Flags().GetInt("cache-expire")
+	if cacheExpire == -1 {
+		cacheExpire = viper.GetInt("cache_expire")
+	}
 	if err != nil {
 		return err
 	}
+
 	cachePurge, err := cmd.Flags().GetInt("cache-purge")
+	if cachePurge == -1 {
+		cachePurge = viper.GetInt("cache_purge")
+	}
 	if err != nil {
 		return err
 	}
@@ -69,10 +85,7 @@ func init() {
 	rootCmd.AddCommand(startCmd)
 
 	startCmd.Flags().StringP("origin", "o", "", "Origin server URL (required)")
-	startCmd.Flags().IntP("port", "p", 8080, "Port to run the server on")
-	startCmd.Flags().Int("cache-expire", 10, "Cache expiration duration in minutes")
-	startCmd.Flags().Int("cache-purge", 30, "Cache purge interval in minutes")
-	if err := startCmd.MarkFlagRequired("origin"); err != nil {
-		return
-	}
+	startCmd.Flags().IntP("port", "p", -1, "Port to run the server on")
+	startCmd.Flags().Int("cache-expire", -1, "Cache expiration duration in minutes")
+	startCmd.Flags().Int("cache-purge", -1, "Cache purge interval in minutes")
 }

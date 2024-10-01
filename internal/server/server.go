@@ -3,6 +3,7 @@ package server
 import (
 	"cachprax/internal/cache"
 	"fmt"
+	"github.com/spf13/viper"
 	"net/http"
 	"net/url"
 )
@@ -15,9 +16,10 @@ type Config struct {
 
 func (cfg *Config) StartServer() error {
 	// server for cache operations
+	cachePort := viper.GetInt("cache_port")
 	cacheMux := http.NewServeMux()
 	cacheServer := &http.Server{
-		Addr:    fmt.Sprintf(":%d", 3001),
+		Addr:    fmt.Sprintf(":%d", cachePort),
 		Handler: cacheMux,
 	}
 
