@@ -7,11 +7,10 @@ import (
 	"path/filepath"
 )
 
-func Init() {
+func Init() error {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Printf("Error finding home directory: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("could not get user home directory: %v", err)
 	}
 
 	configPath := filepath.Join(home, "cachprax.yml")
@@ -20,15 +19,14 @@ func Init() {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		// Create the config state with default values
 		defaultConfig := []byte(`default_port: 8080
-cache_port: 3001
-cache_expire: 10
-cache_purge: 30
-origin: "http://example.com"
-`)
+								cache_port: 3001
+								cache_expire: 10
+								cache_purge: 30
+								origin: ""
+								`)
 		err = os.WriteFile(configPath, defaultConfig, 0644)
 		if err != nil {
-			fmt.Printf("Error creating config state: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("could not write default config state: %v", err)
 		}
 	}
 
@@ -37,7 +35,8 @@ origin: "http://example.com"
 	viper.AddConfigPath(home)
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error reading config state: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("could not read config file: %v", err)
 	}
+
+	return nil
 }
