@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cachprax/cmd"
+	"cachprax/cli"
 	"cachprax/internal/config"
 	"fmt"
 )
@@ -13,7 +13,7 @@ func main() {
 		return
 	}
 
-	err = cmd.Execute()
+	err = cli.Execute()
 	if err != nil {
 		fmt.Printf("could not execute command: %v\n", err)
 		return

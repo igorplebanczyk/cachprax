@@ -1,7 +1,7 @@
-package cmd
+package cli
 
 import (
-	"cachprax/cmd/internal/state"
+	"cachprax/cli/internal/state"
 	"fmt"
 	"github.com/spf13/cobra"
 )
